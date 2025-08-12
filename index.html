@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Click'Heure</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b0f2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Click'Heure">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(#16222A, #3A6073);
+    color: white;
+    text-align: center;
+    user-select: none;
+  }
+  #game {
+    padding: 20px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 18px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .attack {
+    background: #e74c3c;
+    color: white;
+  }
+  .shop {
+    background: #27ae60;
+    color: white;
+  }
+  .stats {
+    margin-top: 20px;
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+<div id="game">
+  <h1>⚔️ Click'Heure ⚔️</h1>
+  <div class="stats">
+    <div>Or : <span id="gold">0</span></div>
+    <div>Gems : <span id="gems">0</span></div>
+    <div>PV : <span id="hp">100</span></div>
+    <div>Vague : <span id="wave">1</span></div>
+  </div>
+  <button class="attack" onclick="attack()">Attaquer</button>
+  <button class="shop" onclick="buyGemHero()">Acheter Héros (Gem)</button>
+</div>
+
+<script>
+let gold = 0;
+let gems = 0;
+let hp = 100;
+let wave = 1;
+
+function updateUI() {
+  document.getElementById('gold').textContent = gold;
+  document.getElementById('gems').textContent = gems;
+  document.getElementById('hp').textContent = hp;
+  document.getElementById('wave').textContent = wave;
+}
+
+function attack() {
+  gold += 10;
+  if (wave % 5 === 0) {
+    gems += Math.floor(Math.random() * 71) + 30; // Drop gem sur boss
+  }
+  wave++;
+  updateUI();
+}
+
+function buyGemHero() {
+  if (gems >= 100) {
+    gems -= 100;
+    alert("Héros acheté !");
+    updateUI();
+  } else {
+    alert("Pas assez de gems !");
+  }
+}
+
+updateUI();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(err => console.log('SW fail', err));
+  });
+}
+</script>
+</body>
+</html>
