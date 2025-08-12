@@ -1,7 +1,8 @@
 {
-  "name": "Click’Heure — Leew11",
-  "short_name": "Click’Heure",
-  "description": "Idle clicker fantasy — PWA hors-ligne.",
+  "id": "/Click-heure/",
+  "name": "Click'Heure — Leew11",
+  "short_name": "Click'Heure",
+  "description": "Idle clicker fantasy (shops or/gem/étoiles, donjons, héros) optimisé mobile.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
