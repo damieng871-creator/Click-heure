@@ -389,5 +389,43 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
 </script>
+<script>
+(async function checkManifestVersion(){
+  try {
+    const res = await fetch('./manifest.webmanifest', { cache: 'no-store' });
+    const mani = await res.json();
+    const newVer = String(mani.version || '0');
+    const key = 'ch:manifest:version';
+    const oldVer = localStorage.getItem(key);
+
+    if (!oldVer) {
+      localStorage.setItem(key, newVer);
+      return;
+    }
+    if (oldVer !== newVer) {
+      // 1) mémorise la nouvelle version
+      localStorage.setItem(key, newVer);
+
+      // 2) demande au SW d'activer la nouvelle version tout de suite s’il existe
+      if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.getRegistration();
+        reg?.waiting?.postMessage?.({ type: 'SKIP_WAITING' });
+      }
+
+      // 3) nettoie les caches de l’app côté page (optionnel mais utile)
+      if (window.caches?.keys) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => /^clickheure-/i.test(k) ? caches.delete(k) : Promise.resolve()));
+      }
+
+      // 4) recharge dur pour prendre toutes les dernières ressources
+      location.reload(true);
+    }
+  } catch(e) {
+    // silencieux si offline ou manifest indisponible
+    console.debug('Manifest check skipped:', e);
+  }
+})();
+</script>
 </body>
 </html>
