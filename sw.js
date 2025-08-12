@@ -1,4 +1,4 @@
-// Click'Heure — Service Worker (v3)
+// Click'Heure — Service Worker (v4)
 // ➜ Incrémente CACHE_NAME à chaque mise à jour de ton code
 const CACHE_NAME = "clickheure-v3";
 const CORE = [
