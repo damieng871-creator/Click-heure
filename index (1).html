@@ -1,0 +1,35 @@
+<!doctype html><html lang="fr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Click’Heure — Leew11</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b0f2a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Click’Heure">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.error));
+}
+</script>
+<style>
+body{margin:0;background:#0b0f2a;color:#e9efff;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+.center{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;text-align:center;padding:18px}
+.btn{appearance:none;border:0;border-radius:12px;padding:12px 14px;font-weight:900;color:#0a0f1e;cursor:pointer;background:linear-gradient(180deg,#fff,#eef1ff);box-shadow:0 12px 26px rgba(0,0,0,.35), inset 0 -6px 12px rgba(100,100,255,.1)}
+.badge{display:inline-block;margin-top:.5rem;padding:.25rem .6rem;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);font-weight:800}
+</style>
+</head><body>
+<div class="center">
+  <h1>Click’Heure</h1>
+  <h2 style="opacity:.85">by <span style="color:#9bf1ff">Leew11</span></h2>
+  <div class="badge">v5.6.1–provisoire</div>
+  <p style="opacity:.9">Appuie sur “Jouer”. Puis ajoute à l’écran d’accueil pour le plein écran.</p>
+  <button class="btn" onclick="document.getElementById('game').style.display='block';this.parentElement.remove()">▶ Jouer</button>
+</div>
+<div id="game" style="display:none">
+  <!-- Le vrai jeu devrait être ici (provisoire: placeholder visuel) -->
+  <div style="padding:16px">
+    <p>Le jeu se charge… (Cette version est un gabarit PWA si l'autre HTML n'est pas présent).</p>
+  </div>
+</div>
+</body></html>
