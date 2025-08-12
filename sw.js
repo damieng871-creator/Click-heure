@@ -1,58 +1,38 @@
-// Version du cache — à incrémenter à chaque mise à jour
-const CACHE_NAME = "clickheure-v1.0.5";
-
-const FILES_TO_CACHE = [
+// Click'Heure — Service Worker (v3)
+// ➜ Incrémente CACHE_NAME à chaque mise à jour de ton code
+const CACHE_NAME = "clickheure-v3";
+const CORE = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png"
-  // ajoute ici tes autres scripts, CSS, images...
 ];
 
-// Installation du Service Worker
+// Installe la nouvelle version et force l’activation
 self.addEventListener("install", (evt) => {
-  console.log("[SW] Installation — cache version", CACHE_NAME);
-  evt.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log("[SW] Mise en cache des fichiers");
-      return cache.addAll(FILES_TO_CACHE);
-    })
-  );
   self.skipWaiting();
-});
-
-// Activation et nettoyage des anciens caches
-self.addEventListener("activate", (evt) => {
-  console.log("[SW] Activation — suppression des anciens caches");
   evt.waitUntil(
-    caches.keys().then((keyList) => {
-      return Promise.all(
-        keyList.map((key) => {
-          if (key !== CACHE_NAME) {
-            console.log("[SW] Suppression du cache", key);
-            return caches.delete(key);
-          }
-        })
-      );
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE))
   );
-  self.clients.claim();
 });
 
-// Interception des requêtes
-self.addEventListener("fetch", (evt) => {
-  evt.respondWith(
-    caches.match(evt.request).then((response) => {
-      return (
-        response ||
-        fetch(evt.request).then((fetchRes) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(evt.request, fetchRes.clone());
-            return fetchRes;
-          });
-        })
-      );
-    })
+// Nettoie les anciens caches puis prend le contrôle
+self.addEventListener("activate", (evt) => {
+  evt.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
+    ).then(() => self.clients.claim())
   );
 });
+
+// Message optionnel pour SKIP_WAITING déclenché par la page
+self.addEventListener("message", (evt) => {
+  if (evt.data && evt.data.type === "SKIP_WAITING") self.skipWaiting();
+});
+
+// Stratégies :
+// - HTML = réseau d'abord (toujours la dernière version) + fallback cache
+// - Assets même origine = stale-while-revalidate
+// - Externe = réseau d'abord, fallback cache
+self.addEventListener("fetch
